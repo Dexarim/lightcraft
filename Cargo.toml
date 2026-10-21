@@ -1,6 +1,7 @@
 [workspace]
 resolver = "3"
 members = ["crates/*", "apps/*", "xtask"]
+exclude = ["vendor/craft-desktop", "vendor/winit"]
 
 [workspace.package]
 version = "0.10.0"
@@ -10,6 +11,7 @@ rust-version = "1.90"
 repository = "https://github.com/storytold/lightcraft"
 
 [workspace.dependencies]
+craft-desktop = { path = "vendor/craft-desktop" }
 craft-ui = { git = "https://github.com/storytold/craft-libs", rev = "5c874d51eeb3de70e735c8ce87a59a7dedd47675", features = ["serde"] }
 craft-docpath = { version = "0.1.0", git = "https://github.com/storytold/craft-libs", rev = "82a24b006eefa036b43c09a67fb9a3fbd17ffe63" }
 # internal
@@ -123,6 +125,10 @@ excessive_precision = "allow"
 
 [profile.dev.package."*"]
 opt-level = 2
+
+[patch.crates-io]
+# Safe same-connection Wayland surface accessor; see vendor/winit/CRAFT_PATCH.md.
+winit = { path = "vendor/winit" }
 
 [profile.dev]
 opt-level = 1

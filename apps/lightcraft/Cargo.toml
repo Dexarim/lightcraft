@@ -42,6 +42,7 @@ rfd = { workspace = true }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 zbus = { workspace = true }
+craft-desktop = { workspace = true, features = ["linux"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 muda = { workspace = true }

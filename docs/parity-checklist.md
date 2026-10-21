@@ -1,6 +1,6 @@
 # Lightroom parity checklist
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-15 · **Change:** minor (LRC-PRINT-PAGE: Print Page Options) · **Target:** Adobe Lightroom Classic 15.5 / Lightroom 9.6
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-21 · **Change:** minor (MENU-BAR: optional Linux Global Menu, local fallback retained) · **Target:** Adobe Lightroom Classic 15.5 / Lightroom 9.6
 
 The measured, row-by-row checklist: one row per Lightroom feature, menu item and shortcut, what we
 have and what is missing. It answers *does the feature exist?* (feature breadth). Whether it is good
@@ -489,12 +489,12 @@ differences and missing bindings are in [ui-parity.md](ui-parity.md#shortcuts).
 
 ## Y. Menus
 
-From `04-menu-tree.md`. ✅ = a command exists and is reachable from the UI (button, panel or shortcut). There is no
-visible menu bar yet: the menu model is only exposed through the control channel (`ui.menu.list`).
+From `04-menu-tree.md`. ✅ = a command exists and is reachable from the UI (button, panel or shortcut).
+The shared menu model drives the visible local/macOS menus, the control channel and optional KDE Global Menu.
 
 | Id | Feature | Tier | Status | Evidence | Missing / notes |
 |---|---|---|---|---|---|
-| MENU-BAR | Menu bar rendering | P1 | ✅ | `crates/ui-egui/src/menubar.rs`, `apps/lightcraft/src/native_menu.rs` | native macOS menu bar (muda) with live labels/enabled/checked; in-window menus on web/Windows/Linux (with one menu open, the pointer on another title switches to it, as in native menu bars); ⌫ and X stay egui-handled (contextual), so they show no key in the native menu; a scrolled menu draws no scrollbar over its rows: the ▲ / ▼ strips, the wheel and dragging scroll it (issue #691: egui's floating bar hid the shortcut text's last character; `crates/ui-egui/src/tests_menubar.rs`) |
+| MENU-BAR | Menu bar rendering | P1 | ✅ | `crates/ui-egui/src/menubar.rs`, `apps/lightcraft/src/native_menu.rs`, `crates/ui-egui/src/native_menu.rs` | native macOS menu bar (muda) with live labels/enabled/checked; in-window menus on web/Windows/Linux; optional KDE Global Menu uses the same model on native Wayland and X11/XWayland, with local fallback retained (runtime matrix: `docs/KDE_INTEGRATION.md`); pointer-switching between local titles and scrolling strips remain unchanged; ⌫ and X stay egui-handled on macOS (contextual); `crates/ui-egui/src/tests_menubar.rs` |
 | MENU-APP-ABOUT | About | P2 | ✅ | `cmd:app.about` | |
 | MENU-APP-SETTINGS | Settings… | P0 | ✅ | `cmd:app.settings` | app menu on macOS, Edit menu elsewhere |
 | MENU-APP-UPDATES | Check for updates | P2 | ⬜ | | |
@@ -794,6 +794,8 @@ Latin stays upright. Advanced Japanese composition remains open. Regression cove
 `export::tests::japanese_watermarks_support_vertical_columns`, `japanese_watermark_options_and_legacy_defaults`, `watermarks_work_without_craft_fonts`.
 
 ## Revision history
+
+- 2026-10-21: MENU-BAR documents the optional Linux exporter and retained local fallback; native Plasma Wayland smoke, 4 adapter and 24 existing menu tests passed (see `docs/KDE_INTEGRATION.md`); no checklist score change.
 
 | Date | Change | Summary |
 |---|---|---|

@@ -1,12 +1,20 @@
 # Gaps: where LightCraft falls short of Lightroom
 
-> **Last reviewed:** 2026-10-11 · **Last updated:** 2026-10-15 · **Change:** minor (gap 15: Print Page Options — page numbers, page info, crop marks)
+> **Last reviewed:** 2026-10-11 · **Last updated:** 2026-10-21 · **Change:** minor (KDE implementation and remaining runtime/DPI/theme coverage)
 
 Every known shortfall, one entry each, ranked by user impact (how many Lightroom users hit it, and
 how hard it blocks them), then by effort. **Agents pick work from the top** (the first entry nobody is
 working on). When you close a gap, delete or shrink its entry, update its rows in
 [parity-checklist.md](parity-checklist.md), and the numbers in [target-app-parity.md](target-app-parity.md)
 and [ROADMAP.md](../ROADMAP.md) if they move.
+
+**KDE/Linux update (2026-10-21):** Global Menu is implemented for native Wayland and
+X11/XWayland using the existing command model. Native Plasma Wayland smoke testing passed
+(actual panel requests/actions, Filmstrip state, modal disabling, Auto/dark and explicit Light).
+X11/Flatpak verification, fractional/mixed-DPI coverage, system accent colours and exact Breeze
+palettes remain separate work; no platform/parity score
+is raised by this integration alone. Native Wayland file drag-and-drop remains unavailable in
+the pinned winit version. See [KDE_INTEGRATION.md](KDE_INTEGRATION.md).
 
 Hours are Opus 5.5 agent wall-clock hours (see [target-app-parity.md](target-app-parity.md#how-hours-are-calibrated)).
 `B` marks a gap that blocks **beta**.
@@ -77,6 +85,7 @@ Beta-blocking gaps (B) total **~230–430 h**; with the stability and platform w
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-21 | minor | Record Linux AppMenu implementation, native Plasma smoke and 4 adapter / 24 local-menu test passes; retain untested runtime/DPI/theme limits without changing parity estimates |
 | 2026-10-18 | patch | Gap 1: six X-Trans CMOS 4 Fujifilm bodies (X-T30 …) take the X-T3's spectral matrices instead of the neutral matrix |
 | 2026-10-15 | minor | Gap 15 shrinks: the Page panel's Page Options (Page Numbers, Page Info, Crop Marks) print on Single Image and Contact Sheet pages; identity plate, watermark, photo info, Cut Guides, direct printing and JPEG output remain |
 | 2026-10-14 | minor | Gap 26: at 100k photos stack and album lookups are indexed, so an "In a Stack" or "Album" smart album counts in ~14 ms (was 0.6–2.7 s); open time unchanged |
