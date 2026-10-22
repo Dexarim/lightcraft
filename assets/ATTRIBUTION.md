@@ -8,10 +8,6 @@ covers a whole directory), or if a licence file referenced in the Licence column
 
 | Path | Asset | Creator | Source | Licence | Added | Modifications |
 |---|---|---|---|---|---|---|
-| `vendor/winit/docs/res/keyboard_standard_1_key.svg` | Keyboard documentation illustration | winit contributors | https://github.com/rust-windowing/winit/tree/v0.30.13/docs/res | Apache-2.0 (`vendor/winit/LICENSE`) | 2026-10-21 | none; upstream documentation only |
-| `vendor/winit/docs/res/keyboard_right_shift_key.svg` | Keyboard documentation illustration | winit contributors | https://github.com/rust-windowing/winit/tree/v0.30.13/docs/res | Apache-2.0 (`vendor/winit/LICENSE`) | 2026-10-21 | none; upstream documentation only |
-| `vendor/winit/docs/res/keyboard_numpad_1_key.svg` | Keyboard documentation illustration | winit contributors | https://github.com/rust-windowing/winit/tree/v0.30.13/docs/res | Apache-2.0 (`vendor/winit/LICENSE`) | 2026-10-21 | none; upstream documentation only |
-| `vendor/winit/docs/res/keyboard_left_shift_key.svg` | Keyboard documentation illustration | winit contributors | https://github.com/rust-windowing/winit/tree/v0.30.13/docs/res | Apache-2.0 (`vendor/winit/LICENSE`) | 2026-10-21 | none; upstream documentation only |
 | `vendor/winit/examples/data/icon.png` | Window example icon | winit contributors | https://github.com/rust-windowing/winit/tree/v0.30.13/examples/data | Apache-2.0 (`vendor/winit/LICENSE`) | 2026-10-21 | none; upstream example only |
 | `vendor/winit/examples/data/gradient.png` | Window example gradient | winit contributors | https://github.com/rust-windowing/winit/tree/v0.30.13/examples/data | Apache-2.0 (`vendor/winit/LICENSE`) | 2026-10-21 | none; upstream example only |
 | `vendor/winit/examples/data/cross2.png` | Cursor example image | winit contributors | https://github.com/rust-windowing/winit/tree/v0.30.13/examples/data | Apache-2.0 (`vendor/winit/LICENSE`) | 2026-10-21 | none; upstream example only |
