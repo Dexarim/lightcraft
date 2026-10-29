@@ -1,6 +1,6 @@
 # KDE Plasma integration
 
-Implementation and native Plasma smoke verification: 2026-10-21.
+Implementation and historical native Plasma smoke verification: 2026-10-21. Upstream reconciliation and full CI: 2026-10-30.
 
 ## Behaviour
 
@@ -11,6 +11,8 @@ external clicks are queued to the UI thread, checked again, then sent through
 targets use the existing handlers. Replacing a library retires its queued actions.
 Open dialogs, native file pickers, quit prompts and shortcut recording block menu actions.
 The local menu is never hidden, and shortcuts remain owned by egui on Linux.
+The host publishes refreshed menu state after logic-only ticks as well as UI frames, so
+background commands do not leave exported checkmarks stale while rendering is paused.
 
 The Linux-only transport exports `com.canonical.dbusmenu`. X11 uses the window's
 AppMenu properties and `com.canonical.AppMenu.Registrar`. Native Wayland uses
@@ -31,8 +33,8 @@ standalone checkouts buildable; update them together with the ecosystem's canoni
   does not edit desktop configuration.
 - `LIGHTCRAFT_NO_GLOBAL_MENU=1` or `KDE_NO_GLOBAL_MENU=1` disables the adapter.
 - Existing display policy is unchanged: XWayland when `DISPLAY` is available;
-  `LIGHTCRAFT_WAYLAND=1` selects the native path. Native Wayland file drag-and-drop
-  is not supported by the pinned winit version; use Import/Open dialogs.
+  `LIGHTCRAFT_WAYLAND=1` selects the native path. The reconciled winit fork includes
+  native Wayland file-drop handling; application interoperability still needs a live check.
 - File pickers already use rfd's XDG portal backend, parented to the window and
   invoked on a worker. No GTK or Qt dependency was introduced.
 - Settings → Interface → Appearance Mode → **Auto** follows the portal's live
@@ -51,7 +53,7 @@ Run one Cargo process at a time per target directory. On memory-limited systems:
 ```sh
 cargo fmt --all -- --check
 CARGO_BUILD_JOBS=1 cargo check --locked -p lightcraft
-CARGO_BUILD_JOBS=1 cargo test --locked -p lightcraft -p lightcraft-ui-egui --lib --bins global_menu_
+CARGO_BUILD_JOBS=1 cargo test --locked -p lightcraft-ui-egui --lib native_menu::tests
 CARGO_BUILD_JOBS=1 cargo clippy --locked -p lightcraft -p lightcraft-ui-egui --all-targets -- -D warnings
 CARGO_BUILD_JOBS=1 cargo test --locked --workspace
 ```
@@ -61,6 +63,48 @@ unadvertised parameters, rating/Undo and delete confirmation. Shared transport
 tests include D-Bus layout/state signals and wire-level Wayland association/lifetime
 checks against a fake peer. These tests do not establish actual Plasma rendering.
 The repository's complete gate remains `cargo xtask ci`, including WASM/layers/assets.
+
+Reconciliation checks (2026-10-29): all four native-menu regressions passed. The exact
+workspace/all-targets Clippy gate and the HEIF-feature Clippy gate passed with the
+CI-pinned required fonts. Layering, asset attribution and parity references passed.
+On 2026-10-30 the exact `cargo xtask ci` passed all eight stages, with one build job,
+one test thread, required CI-pinned fonts (`b076417b5880bd4154bd22f00695b1d28c6bea83`)
+and a matching extracted WASM target sysroot. The final run selected the AMD Vulkan ICD
+for that process as described below. Workspace tests: 5,076 passed, 38 ignored.
+The separate HEIF stage passed 173 tests with one ignored; doctests passed one with
+three ignored. The UI suite alone passed 1,594 tests with four ignored. The 29-crate
+WASM gate, parity, assets, layers and both Clippy configurations passed.
+
+The generated CI report additionally records 149 runtime skips: 137 missing corpus
+inputs, eight missing model inputs, two Cyrillic font-coverage cases (Russian/Ukrainian),
+one deliberate GPU device-loss case and one missing system ICC-profile case. Required
+fonts do not imply every script is covered. The final GPU probe selected AMD Vulkan;
+the optional `--hardware` backend matrix was not run. These totals include the additional
+host logic-only publication regression. All eight final stages completed successfully.
+
+The first final-gate rerun printed 19 passing GPU integration tests and one ignored test,
+then that process exited with SIGSEGV during teardown. Its core identified NVIDIA driver
+libraries in the crashing stack; GPU sources were unchanged. A process-scoped rerun using
+`VK_DRIVER_FILES=/usr/share/vulkan/icd.d/radeon_icd.json` exited successfully with the same
+19 passing tests and one ignored test. A separate capability probe confirmed the available
+pipeline used `AMD Radeon Graphics (RADV RENOIR) (Vulkan)`. This selects the test process's
+ICD only; it neither changes system configuration nor fixes the NVIDIA teardown failure.
+
+## Current runtime verification boundary — 2026-10-30
+
+The optional native Wayland launch successfully exported and executed the Filmstrip action,
+including the refreshed D-Bus checkmark after the logic-only host fix. However, native
+screenshots timed out after the initial frame. The session's ScreenSaver service was later
+confirmed active: the locked session can withhold Wayland frame callbacks even when KWin
+reports the application window active and not minimized. These observations do not establish
+a LightCraft rendering defect. The same capture boundary affected the adapter-disabled and
+Glow probes. A startup-font experiment did not restore capture and was reverted.
+
+Do not count this as a native Wayland GUI pass. The existing default XWayland launch passed
+the menu action/checkmark and screenshot smoke before the host logic-only publication fix.
+Fresh GUI verification of the final build is pending an unlocked session. The test
+does not unlock or bypass the lock screen. No compositor, driver or user settings were changed. The older
+Wayland observations below apply only to their dated build.
 
 ## Verified results — 2026-10-21
 
@@ -131,6 +175,6 @@ synthetic keyboard or pointer input. Capture only its own `ui.screenshot` output
 ## Remaining limitations
 
 No exact Breeze palette/system-accent implementation, no new notifications or tray,
-and no claimed 5-scale/mixed-monitor GUI pass from unit tests. Native file-drop,
-Linux monitor-profile following and tablet events remain upstream/application gaps.
+and no claimed 5-scale/mixed-monitor GUI pass from unit tests. Native file-drop interoperability,
+Linux monitor-profile following and tablet events still need application/runtime verification.
 Keep test outcomes in the integration report; do not infer success from compilation.
